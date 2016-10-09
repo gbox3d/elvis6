@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="text-log" style="width : 320px;height: 240px;background-color: black; color: greenyellow" ></div>
+<div id="inp-test" >
+    <input >
+    <button class="send" >send</button>
+    <button class="clear">clear</button>
+</div>
+
+<script>
+
+    document.querySelector("#inp-test button.send").addEventListener('click',function () {
+        document.querySelector('#text-log').innerText += document.querySelector('#inp-test input').value + '\n';
+
+        let result = (document.querySelector('#inp-test input').value).match(/\d+|\+|\-|\*|\/\%/g);
+        console.log(result);
+
+        let num1 = parseFloat(result[0]);
+        let num2 = parseFloat(result[2]);
+
+        switch( result[1] ) {
+            case '+':
+                document.querySelector('#text-log').innerText += num1 + num2 + '\n';
+                break;
+            case '-':
+                document.querySelector('#text-log').innerText += num1 - num2 + '\n';
+                break;
+            case '*':
+                document.querySelector('#text-log').innerText += num1 * num2 + '\n';
+                break;
+            case '/':
+                document.querySelector('#text-log').innerText += num1 / num2 + '\n';
+                break;
+            case '%':
+                document.querySelector('#text-log').innerText += num1 % num2 + '\n';
+                break;
+
+        }
+
+        document.querySelector('#inp-test input').value = '';
+    });
+
+    document.querySelector("#inp-test button.clear").addEventListener('click',function () {
+        document.querySelector('#text-log').innerText = '';
+    });
+
+
+</script>
+
+
+
+
+</body>
+</html>

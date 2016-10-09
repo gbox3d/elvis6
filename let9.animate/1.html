@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../libs/Tween.js"></script>
+
+</head>
+<body>
+
+<canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
+
+<script>
+
+    var canvas = document.querySelector('#myCanvas');
+    var context = canvas.getContext('2d');
+
+    var testObj = {xpos : 0};
+
+    new TWEEN.Tween( testObj )
+            .to( {
+                xpos : 10
+            }, 5000)
+            .onUpdate(function() {
+                //console.log(this) //
+
+            })
+            .onStart(function() {
+                console.log('start')
+            })
+            .onComplete(function() {
+                console.log('complete');
+            })
+            .onStop(function() {
+                console.log('stop')
+            })
+            .easing( TWEEN.Easing.Linear.None )
+            .start();
+
+    function loop() {
+        //에니메이션 처리
+        TWEEN.update();
+
+        //랜더링 (화면에 반영)
+        context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
+
+        context.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
+        context.beginPath();
+        context.moveTo(-canvas.width/2,0);
+        context.lineTo(canvas.width/2,0);
+        context.stroke()
+
+        context.beginPath();
+        context.moveTo(0,-canvas.height/2);
+        context.lineTo(0,canvas.height/2);
+        context.stroke();
+
+        context.font = '18pt Calibri';
+        context.fillStyle = 'blue';
+        context.fillText("x pos is " + Math.round(testObj.xpos), 0, 0);
+
+        requestAnimationFrame(loop);
+    }
+    loop();
+
+
+
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
+
+<script>
+
+
+    var canvas = document.querySelector('#myCanvas');
+    var context = canvas.getContext('2d');
+
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(50, 50);
+    context.stroke();
+
+    //이동 변환
+    context.translate(160,120);
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(50, 50);
+    context.strokeStyle = '#ff0000';
+    context.stroke();
+
+    //회전 변환
+    context.translate(50,0);
+    context.rotate(90 * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(50, 50);
+    context.strokeStyle = '#00ff00';
+    context.stroke();
+
+    /*
+    1 0
+    0 1
+    0 0
+     */
+    context.setTransform(1,0,0,1,0,0); //단위행렬 대입
+    context.translate(50,0);
+    context.rotate(90 * Math.PI / 180);
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(50, 50);
+    context.lineWidth = 3;
+    context.strokeStyle = '#0000ff';
+    context.stroke();
+
+</script>
+
+</body>
+</html>

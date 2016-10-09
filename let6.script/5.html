@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="text-log" style="width : 320px;height: 240px;background-color: black; color: greenyellow" ></div>
+<div id="inp-test" >
+    <input >
+    <button class="send" >send</button>
+    <button class="clear">clear</button>
+</div>
+
+<script>
+
+    document.querySelector('#text-log').innerText = '구구단을 외워 보아요. \n';
+
+    document.querySelector("#inp-test button.send").addEventListener('click',function () {
+        var ur_number = parseInt( document.querySelector('#inp-test input').value );
+        for(var i=1;i<= 9;i++) {
+            document.querySelector('#text-log').innerText += ur_number + ' * ' + i + '=' + i*ur_number + '\n';
+        }
+    });
+
+    document.querySelector("#inp-test button.clear").addEventListener('click',function () {
+        document.querySelector('#text-log').innerText = '';
+    });
+
+
+</script>
+
+
+
+
+</body>
+</html>

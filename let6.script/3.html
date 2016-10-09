@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="text-log" style="width : 320px;height: 240px;background-color: black; color: greenyellow" ></div>
+<div id="inp-test" >
+    <input >
+    <button class="send" >send</button>
+    <button class="clear">clear</button>
+</div>
+
+<script>
+
+    var my_age = 13;
+    document.querySelector('#text-log').innerText = '저는 '+ my_age +'살 입니다. 당신은 몇살인가요? \n'
+
+    document.querySelector("#inp-test button.send").addEventListener('click',function () {
+
+        var ur_age = parseInt( document.querySelector('#inp-test input').value );
+        var word_age;
+
+        if(my_age < ur_age) {
+            word_age = '많';
+        }
+        else if( my_age == ur_age) {
+            word_age = '동갑이';
+        }
+        else if( my_age > ur_age) {
+            word_age = '어리';
+        }
+
+        document.querySelector('#text-log').innerText += ur_age + ' 이면 저보다 나이가 '+ word_age + '네요' ;
+        document.querySelector('#inp-test input').value = '';
+    });
+
+    document.querySelector("#inp-test button.clear").addEventListener('click',function () {
+        document.querySelector('#text-log').innerText = '';
+    });
+
+
+</script>
+
+
+
+
+</body>
+</html>

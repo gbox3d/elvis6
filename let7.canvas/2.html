@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
+
+<script>
+
+    var canvas = document.querySelector('#myCanvas');
+    var context = canvas.getContext('2d');
+
+    //서로 다른 성질의 직선 그리기
+    context.beginPath();
+
+    context.moveTo(160, 120);
+    context.lineTo(300, 120);
+
+    context.strokeStyle = '#00ff00';
+    context.lineWidth = 2.5;
+    context.stroke();
+
+    context.beginPath(); //패스는 두직선을 완전히 구분 시킨다.
+    context.moveTo(160, 120);
+    context.lineTo(20, 20);
+
+    context.strokeStyle = '#ff0000';
+    context.lineWidth = 5;
+    context.stroke();
+
+
+
+
+</script>
+
+</body>
+</html>

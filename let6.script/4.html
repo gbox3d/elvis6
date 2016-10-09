@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div id="text-log" style="width : 320px;height: 240px;background-color: black; color: greenyellow" ></div>
+<div id="inp-test" >
+    <input >
+    <button class="send" >send</button>
+    <button class="clear">clear</button>
+</div>
+
+<script>
+
+    var my_number = 13;
+    var count = 0;
+
+    document.querySelector('#text-log').innerText = '내가 생각한 수를 맞춰 보세요. \n'
+
+    document.querySelector("#inp-test button.send").addEventListener('click',function () {
+
+        var ur_number = parseInt( document.querySelector('#inp-test input').value );
+        var word_answer;
+        count++;
+
+        if(my_number < ur_number) {
+            word_answer = '큼';
+        }
+        else if( my_number == ur_number) {
+            word_answer = '맞습';
+        }
+        else if( my_number > ur_number) {
+            word_answer = '작습';
+        }
+
+        document.querySelector('#text-log').innerText += ' 숫자가  '+ word_answer + '니다 \n' ;
+        if(word_answer == '맞습') {
+            document.querySelector('#text-log').innerText += count + ' 번 만에 정답을 알아 내셨습니다. \n' ;
+
+        }
+        document.querySelector('#inp-test input').value = '';
+    });
+
+    document.querySelector("#inp-test button.clear").addEventListener('click',function () {
+        document.querySelector('#text-log').innerText = '';
+    });
+
+
+</script>
+
+
+
+
+</body>
+</html>
