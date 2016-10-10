@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>이미지 파일 로딩하기</title>
 </head>
 <body>
 
-
+<div>
+    <img src="../res/2d/tds_zombie/skeleton-idle_0.png">
+</div>
 <canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
 
 <script>
     var canvas = document.querySelector('#myCanvas');
     var context = canvas.getContext('2d');
 
-    //도형 그리고 색칠하기
     context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
+
     context.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
     context.beginPath();
     context.moveTo(-canvas.width/2,0);
@@ -28,12 +30,16 @@
 
     var imageObj = new Image();
 
-    imageObj.onload = function() {
+    //구식 문법
+//    imageObj.onload = function() {
+//        context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+//    };
 
-
+    //현대적 문법
+    imageObj.addEventListener('load',()=> {
         context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+    })
 
-    };
     imageObj.src = '../res/2d/tds_human/handgun/idle/survivor-idle_handgun_0.png';
 
 

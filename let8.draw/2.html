@@ -35,17 +35,15 @@
 
         context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
         context.translate(20,20);
-        context.scale(0.25,0.25);
         context.rotate(45 * (Math.PI/180));
+        context.scale(0.25,0.25);
         context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
 
         context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
         context.translate(-20,-20);
-        context.scale(0.25,0.25);
         context.rotate(-45 * (Math.PI/180));
+        context.scale(0.25,0.25);
         context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
-
-
 
     };
     imageObj.src = '../res/2d/tds_human/handgun/idle/survivor-idle_handgun_0.png';
