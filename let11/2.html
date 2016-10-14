@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../libs/async.js"></script>
+    <script src="../libs/Tween.js"></script>
+    <script src="../libs/utils.js"></script>
+    <script src="../libs/three.min.js"></script>
+
+</head>
+<body>
+
+<div>
+    <canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
+</div>
+
+<script>
+    var canvas = document.querySelector('#myCanvas');
+    var context = canvas.getContext('2d');
+
+    function beginNewFramw() {
+        //중점이동 초기화
+        context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
+        //회면지우기
+        context.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
+        //십자선그리기
+        context.beginPath();
+        context.moveTo(-canvas.width/2,0);
+        context.lineTo(canvas.width/2,0);
+        context.stroke()
+        context.beginPath();
+        context.moveTo(0,-canvas.height/2);
+        context.lineTo(0,canvas.height/2);
+        context.stroke()
+    }
+
+
+    var tds_human_path = "../res/2d/tds_human/";
+    var tds_human_files = {
+        idle_0 : tds_human_path + 'handgun/idle/survivor-idle_handgun_0.png',
+        idle_1 : tds_human_path + 'handgun/idle/survivor-idle_handgun_1.png',
+        idle_2 : tds_human_path + 'handgun/idle/survivor-idle_handgun_2.png',
+        idle_3 : tds_human_path + 'handgun/idle/survivor-idle_handgun_3.png',
+        idle_4 : tds_human_path + 'handgun/idle/survivor-idle_handgun_4.png',
+        idle_5 : tds_human_path + 'handgun/idle/survivor-idle_handgun_5.png',
+        idle_6 : tds_human_path + 'handgun/idle/survivor-idle_handgun_6.png',
+        idle_7 : tds_human_path + 'handgun/idle/survivor-idle_handgun_7.png',
+        idle_8 : tds_human_path + 'handgun/idle/survivor-idle_handgun_8.png',
+        idle_9 : tds_human_path + 'handgun/idle/survivor-idle_handgun_9.png',
+        idle_10 : tds_human_path + 'handgun/idle/survivor-idle_handgun_10.png',
+        idle_11 : tds_human_path + 'handgun/idle/survivor-idle_handgun_11.png',
+        idle_12 : tds_human_path + 'handgun/idle/survivor-idle_handgun_12.png',
+        idle_13 : tds_human_path + 'handgun/idle/survivor-idle_handgun_13.png',
+        idle_14 : tds_human_path + 'handgun/idle/survivor-idle_handgun_14.png',
+        idle_15 : tds_human_path + 'handgun/idle/survivor-idle_handgun_15.png',
+        idle_16 : tds_human_path + 'handgun/idle/survivor-idle_handgun_16.png',
+        idle_17 : tds_human_path + 'handgun/idle/survivor-idle_handgun_17.png',
+        idle_18 : tds_human_path + 'handgun/idle/survivor-idle_handgun_18.png',
+        idle_19 : tds_human_path + 'handgun/idle/survivor-idle_handgun_19.png',
+        shoot_0 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_0.png',
+        shoot_1 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_1.png',
+        shoot_2 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_2.png',
+        move_0 : tds_human_path + 'handgun/move/survivor-move_handgun_0.png',
+        move_1 : tds_human_path + 'handgun/move/survivor-move_handgun_1.png',
+        move_2 : tds_human_path + 'handgun/move/survivor-move_handgun_2.png',
+        move_3 : tds_human_path + 'handgun/move/survivor-move_handgun_3.png',
+        move_4 : tds_human_path + 'handgun/move/survivor-move_handgun_4.png',
+        move_5 : tds_human_path + 'handgun/move/survivor-move_handgun_5.png',
+        move_6 : tds_human_path + 'handgun/move/survivor-move_handgun_6.png',
+        move_7 : tds_human_path + 'handgun/move/survivor-move_handgun_7.png',
+        move_8 : tds_human_path + 'handgun/move/survivor-move_handgun_8.png',
+        move_9 : tds_human_path + 'handgun/move/survivor-move_handgun_9.png',
+        move_10 : tds_human_path + 'handgun/move/survivor-move_handgun_10.png',
+        move_11 : tds_human_path + 'handgun/move/survivor-move_handgun_11.png',
+        move_12 : tds_human_path + 'handgun/move/survivor-move_handgun_12.png',
+        move_13 : tds_human_path + 'handgun/move/survivor-move_handgun_13.png',
+        move_14 : tds_human_path + 'handgun/move/survivor-move_handgun_14.png',
+        move_15 : tds_human_path + 'handgun/move/survivor-move_handgun_15.png',
+        move_16 : tds_human_path + 'handgun/move/survivor-move_handgun_16.png',
+        move_17 : tds_human_path + 'handgun/move/survivor-move_handgun_17.png',
+        move_18 : tds_human_path + 'handgun/move/survivor-move_handgun_18.png',
+        move_19 : tds_human_path + 'handgun/move/survivor-move_handgun_19.png'
+
+    }
+
+    var charAnimObj = {
+        FrameIndex : 0,
+        status : 'idle',
+        position : new THREE.Vector3(),
+        rotation : 0,
+        putSprite : function () {
+            var imageObj = this.images[ this.status + "_"+  Math.round(this.FrameIndex) ];
+            context.translate(this.position.x,this.position.y);
+            context.scale(0.3,0.3);
+            context.rotate( (this.rotation -90) * Math.PI/180);
+
+            context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+
+        }
+    };
+
+    var keyInputTrigger = {
+        statusTable : {},
+        callback : function (delta) {},
+        setCallback : function (cb) {
+            this.callback = cb.bind(this)
+        }
+
+    }
+
+    function changeIdleAnim() {
+        charAnimObj.FrameIndex = 0;
+        charAnimObj.status = 'idle';
+        charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
+                .to( {
+                    FrameIndex : 19
+                }, 1000)
+                .easing( TWEEN.Easing.Linear.None )
+                .repeat(Infinity);
+        charAnimObj.tw_idle.start();
+
+    }
+
+    function changeShootAnim() {
+        charAnimObj.FrameIndex = 0;
+        charAnimObj.status = 'shoot';
+        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
+                .to( {
+                    FrameIndex : 2
+                }, 1000)
+                .easing( TWEEN.Easing.Linear.None );
+        charAnimObj.tw_shoot.start();
+
+    }
+
+    function changeMoveAnim() {
+        charAnimObj.FrameIndex = 0;
+        charAnimObj.status = 'move';
+        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
+                .to( {
+                    FrameIndex : 19
+                }, 1000)
+                .easing( TWEEN.Easing.Linear.None );
+        charAnimObj.tw_shoot.start();
+
+    }
+
+    async.waterfall([
+                function (next) {
+                    loadImages(
+                            tds_human_files
+                            , (images)=> {
+                                next(null,images);}
+                    );
+
+
+                },
+                function (images,next) {
+
+                    changeIdleAnim();
+
+                    charAnimObj.images = images;
+                    charAnimObj.Fsm = "idle";
+
+                    var _tick = (new Date()).getTime();
+                    //console.log(images);
+                    function loop() {
+                        //에니메이션 처리
+                        TWEEN.update();
+                        beginNewFramw();
+
+                        //델타틱 계산
+                        let deltaTick = (new Date()).getTime() - _tick;
+                        _tick = (new Date()).getTime();
+
+                        keyInputTrigger.callback(deltaTick/1000);
+                        charAnimObj.putSprite();
+
+                        requestAnimationFrame(loop);
+                    }
+                    loop();
+
+                    next();
+                },
+                function (next) {
+
+                    document.addEventListener('keydown',(evt)=>{
+                        //console.log(evt);
+                        keyInputTrigger.statusTable[evt.code] = true;
+//                    if(evt.code == "KeyA") {
+//                        charAnimObj.position.x += 1;
+//                    }
+
+                    })
+
+                    document.addEventListener('keyup',(evt)=>{
+                        keyInputTrigger.statusTable[evt.code] = false;
+                    })
+
+                    next();
+
+                }
+            ],
+            (error,result)=> {
+                startApp()
+
+
+            }
+    )
+
+
+    function startApp() {
+
+        /*-----------실습 코드 --------------------------*/
+
+        keyInputTrigger.setCallback(function (delta) {
+
+            var front_vect = new THREE.Vector3(0,1,0);
+            var side_vect = new THREE.Vector3(1,0,0);
+
+            //회전적용
+            var quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), charAnimObj.rotation * Math.PI / 180 );
+            front_vect.applyQuaternion(quaternion);
+            side_vect.applyQuaternion(quaternion);
+
+            switch (charAnimObj.Fsm) {
+                case "idle":
+                    if(this.statusTable["KeyW"] == true || this.statusTable["KeyS"] == true) {
+                        charAnimObj.Fsm = "move";
+                        changeMoveAnim();
+                    }
+                    break;
+                case "move":
+                    if(this.statusTable["KeyW"] == false && this.statusTable["KeyS"] == false) {
+                        charAnimObj.Fsm = "idle";
+                        changeIdleAnim();
+                    }
+                    break;
+                case "shoot":
+                    break;
+            }
+
+            if(this.statusTable["KeyW"] == true) {
+
+                charAnimObj.position.addScaledVector(front_vect,-delta * 10)
+            }
+            else if(this.statusTable["KeyS"] == true) {
+                //charAnimObj.position.y -= delta * 10;
+                charAnimObj.position.addScaledVector(front_vect,delta * 10 )
+            }
+
+            if(this.statusTable["KeyA"] == true) {
+                charAnimObj.rotation += delta*90;
+
+
+            }
+            else if(this.statusTable["KeyD"] == true) {
+                charAnimObj.rotation -= delta*90;
+
+            }
+
+        });
+
+        /*-----------실습 코드 --------------------------------*/
+
+        console.log('start app')
+
+    }
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>
