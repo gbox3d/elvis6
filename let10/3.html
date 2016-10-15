@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- loadImage -->
+    <script src="../libs/utils.js"></script>
+    <script src="../libs/Tween.js"></script>
+
+</head>
+<body>
+
+<div>
+    <canvas id="myCanvas" width="320" height="240" style="border: solid 1px black" ></canvas>
+</div>
+
+<div>
+    <button id="btn-fire" > fire </button>
+</div>
+
+
+<script>
+    var canvas = document.querySelector('#myCanvas');
+    var context = canvas.getContext('2d');
+
+    context.translate(canvas.width/2, canvas.height/2);
+
+
+    function beginNewFramw() {
+
+        context.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
+        context.beginPath();
+        context.moveTo(-canvas.width/2,0);
+        context.lineTo(canvas.width/2,0);
+        context.stroke()
+
+        context.beginPath();
+        context.moveTo(0,-canvas.height/2);
+        context.lineTo(0,canvas.height/2);
+        context.stroke()
+    }
+
+    var tds_human_path = "../res/2d/tds_human/";
+    var tds_human_files = {
+        idle_0 : tds_human_path + 'handgun/idle/survivor-idle_handgun_0.png',
+        idle_1 : tds_human_path + 'handgun/idle/survivor-idle_handgun_1.png',
+        idle_2 : tds_human_path + 'handgun/idle/survivor-idle_handgun_2.png',
+        idle_3 : tds_human_path + 'handgun/idle/survivor-idle_handgun_3.png',
+        idle_4 : tds_human_path + 'handgun/idle/survivor-idle_handgun_4.png',
+        idle_5 : tds_human_path + 'handgun/idle/survivor-idle_handgun_5.png',
+        idle_6 : tds_human_path + 'handgun/idle/survivor-idle_handgun_6.png',
+        idle_7 : tds_human_path + 'handgun/idle/survivor-idle_handgun_7.png',
+        idle_8 : tds_human_path + 'handgun/idle/survivor-idle_handgun_8.png',
+        idle_9 : tds_human_path + 'handgun/idle/survivor-idle_handgun_9.png',
+        idle_10 : tds_human_path + 'handgun/idle/survivor-idle_handgun_10.png',
+        idle_11 : tds_human_path + 'handgun/idle/survivor-idle_handgun_11.png',
+        idle_12 : tds_human_path + 'handgun/idle/survivor-idle_handgun_12.png',
+        idle_13 : tds_human_path + 'handgun/idle/survivor-idle_handgun_13.png',
+        idle_14 : tds_human_path + 'handgun/idle/survivor-idle_handgun_14.png',
+        idle_15 : tds_human_path + 'handgun/idle/survivor-idle_handgun_15.png',
+        idle_16 : tds_human_path + 'handgun/idle/survivor-idle_handgun_16.png',
+        idle_17 : tds_human_path + 'handgun/idle/survivor-idle_handgun_17.png',
+        idle_18 : tds_human_path + 'handgun/idle/survivor-idle_handgun_18.png',
+        idle_19 : tds_human_path + 'handgun/idle/survivor-idle_handgun_19.png',
+        shoot_0 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_0.png',
+        shoot_1 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_1.png',
+        shoot_2 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_2.png'
+    }
+
+    var charAnimObj = {FrameIndex : 0,status : 'idle'};
+
+
+    /*----------------코딩 실습 부분 1 시작 -------------------*/
+
+    loadImages(
+            tds_human_files
+            , (images)=> {
+
+        function changeIdleAnim() {
+            charAnimObj.FrameIndex = 0;
+            charAnimObj.status = 'idle';
+            charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
+                    .to( {
+                        FrameIndex : 19
+                    }, 1000)
+                    /*
+                    .onUpdate(function() {
+                    })
+                    .onStart(function() {
+                        console.log('start idle')
+                    })
+                    .onComplete(function() {
+                        console.log('complete');
+                    })
+                    .onStop(function() {
+                        console.log('stop')
+                    })
+                    */
+                    .easing( TWEEN.Easing.Linear.None )
+                    .repeat(Infinity);
+            charAnimObj.tw_idle.start();
+
+        }
+
+        function changeShootAnim() {
+            charAnimObj.FrameIndex = 0;
+            charAnimObj.status = 'shoot';
+            charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
+                    .to( {
+                        FrameIndex : 2
+                    }, 1000)
+                    /*
+                    .onUpdate(function() {
+                    })
+                    .onStart(function() {
+                        console.log('start shoot')
+                    })
+                    */
+                    .onComplete(function() {
+                        console.log('complete shoot anim');
+                        changeIdleAnim();
+                    })
+                    /*
+                    .onStop(function() {
+                        console.log('stop')
+                    })
+                    */
+                    .easing( TWEEN.Easing.Linear.None );
+
+            charAnimObj.tw_shoot.start();
+
+        }
+
+        changeIdleAnim();
+
+        function loop() {
+
+            //에니메이션 처리
+            TWEEN.update();
+
+            beginNewFramw();
+
+            var imageObj = images[ charAnimObj.status + "_"+  Math.round(charAnimObj.FrameIndex) ];
+            context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+
+        document.querySelector('#btn-fire').addEventListener('click',function () {
+            charAnimObj.tw_idle.stop();
+            changeShootAnim();
+        });
+
+        /*----------------코딩 실습 부분  1  끝-------------------*/
+
+    });
+
+</script>
+
+</body>
+</html>
