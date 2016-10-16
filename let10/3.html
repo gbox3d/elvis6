@@ -7,6 +7,7 @@
     <!-- loadImage -->
     <script src="../libs/utils.js"></script>
     <script src="../libs/Tween.js"></script>
+    <script src="../libs/buffer-loader.js"></script>
 
 </head>
 <body>
@@ -25,6 +26,30 @@
     var context = canvas.getContext('2d');
 
     context.translate(canvas.width/2, canvas.height/2);
+
+    var audio_context = new AudioContext();
+
+    var fx_gun_fire1;
+    var bufferLoader = new BufferLoader(audio_context, [
+                '../res/fx/gun_fire.wav'],
+            function(_bufferList) {//로딩이 모두 완료 되면...
+                //bufferList = _bufferList;
+                fx_gun_fire1 = _bufferList[0];
+            }
+    );
+    bufferLoader.load();
+
+    function playSound(fx_data) {
+        if (!audio_context.createGain)
+            audio_context.createGain = audio_context.createGainNode;
+        let source1 = audio_context.createBufferSource();
+        source1.buffer = fx_data;
+        let gainNode = audio_context.createGain();
+        source1.connect(gainNode);
+        gainNode.connect(audio_context.destination);
+
+        source1.start();
+    }
 
 
     function beginNewFramw() {
@@ -77,86 +102,67 @@
             tds_human_files
             , (images)=> {
 
-        function changeIdleAnim() {
-            charAnimObj.FrameIndex = 0;
-            charAnimObj.status = 'idle';
-            charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
-                    .to( {
-                        FrameIndex : 19
-                    }, 1000)
-                    /*
-                    .onUpdate(function() {
-                    })
-                    .onStart(function() {
-                        console.log('start idle')
-                    })
-                    .onComplete(function() {
-                        console.log('complete');
-                    })
-                    .onStop(function() {
-                        console.log('stop')
-                    })
-                    */
-                    .easing( TWEEN.Easing.Linear.None )
-                    .repeat(Infinity);
-            charAnimObj.tw_idle.start();
+                function changeIdleAnim() {
+                    charAnimObj.FrameIndex = 0;
+                    charAnimObj.status = 'idle';
+                    charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
+                            .to( {
+                                FrameIndex : 19
+                            }, 1000)
+                            .easing( TWEEN.Easing.Linear.None )
+                            .repeat(Infinity);
+                    charAnimObj.tw_idle.start();
 
-        }
+                }
 
-        function changeShootAnim() {
-            charAnimObj.FrameIndex = 0;
-            charAnimObj.status = 'shoot';
-            charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
-                    .to( {
-                        FrameIndex : 2
-                    }, 1000)
-                    /*
-                    .onUpdate(function() {
-                    })
-                    .onStart(function() {
-                        console.log('start shoot')
-                    })
-                    */
-                    .onComplete(function() {
-                        console.log('complete shoot anim');
-                        changeIdleAnim();
-                    })
-                    /*
-                    .onStop(function() {
-                        console.log('stop')
-                    })
-                    */
-                    .easing( TWEEN.Easing.Linear.None );
+                function changeShootAnim() {
+                    charAnimObj.FrameIndex = 0;
+                    charAnimObj.status = 'shoot';
+                    charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
+                            .to( {
+                                FrameIndex : 2
+                            }, 1000)
+                            .onComplete(function() {
+                                console.log('complete shoot anim');
+                                changeIdleAnim();
+                            })
+                            .easing( TWEEN.Easing.Linear.None );
+                    charAnimObj.tw_shoot.start();
+                }
 
-            charAnimObj.tw_shoot.start();
-
-        }
-
-        changeIdleAnim();
-
-        function loop() {
-
-            //에니메이션 처리
-            TWEEN.update();
-
-            beginNewFramw();
-
-            var imageObj = images[ charAnimObj.status + "_"+  Math.round(charAnimObj.FrameIndex) ];
-            context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
-
-            requestAnimationFrame(loop);
-        }
-        loop();
+                changeIdleAnim();
 
 
-        document.querySelector('#btn-fire').addEventListener('click',function () {
-            charAnimObj.tw_idle.stop();
-            changeShootAnim();
-        });
 
-        /*----------------코딩 실습 부분  1  끝-------------------*/
 
-    });
+                function loop() {
+
+                    //에니메이션 처리
+                    TWEEN.update();
+
+                    beginNewFramw();
+
+                    var imageObj = images[ charAnimObj.status + "_"+  Math.round(charAnimObj.FrameIndex) ];
+                    context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+
+                    requestAnimationFrame(loop);
+                }
+                loop();
+
+
+                document.querySelector('#btn-fire').addEventListener('click',function () {
+                    charAnimObj.tw_idle.stop();
+                    changeShootAnim();
+
+                    playSound(fx_gun_fire1);
+
+
+
+                });
+
+                /*----------------코딩 실습 부분  1  끝-------------------*/
+
+            });
 
 </script>
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>shot 동작 추가 </title>
 
     <script src="../libs/async.js"></script>
     <script src="../libs/Tween.js"></script>
@@ -114,6 +114,9 @@
             "KeyA" : false,
             "KeyD" : false
         },
+        triggerTable : {
+
+        },
         callback : function (delta) {},
         setCallback : function (cb) {
             this.callback = cb.bind(this)
@@ -131,9 +134,6 @@
                 .easing( TWEEN.Easing.Linear.None )
                 .repeat(Infinity);
         charAnimObj.tw_idle.start();
-
-
-
     }
 
     function changeShootAnim() {
@@ -200,11 +200,9 @@
                 function (next) {
 
                     document.addEventListener('keydown',(evt)=>{
-                        //console.log(evt);
+                        console.log(evt);
                         keyInputTrigger.statusTable[evt.code] = true;
-//                    if(evt.code == "KeyA") {
-//                        charAnimObj.position.x += 1;
-//                    }
+                        keyInputTrigger.triggerTable[evt.code] = true; //트리거는 키가 눌렀을때만 처리한다.
 
                     })
 
@@ -241,38 +239,54 @@
 
             switch (charAnimObj.Fsm) {
                 case "idle":
-                    if(this.statusTable["KeyW"] == true || this.statusTable["KeyS"] == true) {
+                    if(this.statusTable["KeyW"] == true
+                            || this.statusTable["KeyS"] == true
+                            || this.statusTable["KeyA"] == true
+                            || this.statusTable["KeyD"] == true
+                    ) {
                         charAnimObj.Fsm = "move";
                         changeMoveAnim();
                     }
+                    else if(this.triggerTable["Space"] == true) {
+                        this.triggerTable["Space"] = false;
+                        charAnimObj.Fsm = "shoot";
+                        changeShootAnim();
+                    }
                     break;
                 case "move":
-                    if(this.statusTable["KeyW"] == false && this.statusTable["KeyS"] == false) {
+                    if(this.statusTable["KeyW"] == false && this.statusTable["KeyS"] == false
+                            && this.statusTable["KeyA"] == false
+                            && this.statusTable["KeyD"] == false
+
+                    ) {
+                        charAnimObj.Fsm = "idle";
+                        changeIdleAnim();
+                    }
+
+                    if(this.statusTable["KeyW"] == true) {
+
+                        charAnimObj.position.addScaledVector(front_vect,-delta * 10)
+                    }
+                    else if(this.statusTable["KeyS"] == true) {
+                        //charAnimObj.position.y -= delta * 10;
+                        charAnimObj.position.addScaledVector(front_vect,delta * 10 )
+                    }
+
+                    if(this.statusTable["KeyA"] == true) {
+                        charAnimObj.rotation += delta*90;
+
+
+                    }
+                    else if(this.statusTable["KeyD"] == true) {
+                        charAnimObj.rotation -= delta*90;
+                    }
+                    break;
+                case "shoot":
+                    if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";
                         changeIdleAnim();
                     }
                     break;
-                case "shoot":
-                    break;
-            }
-
-            if(this.statusTable["KeyW"] == true) {
-
-                charAnimObj.position.addScaledVector(front_vect,-delta * 10)
-            }
-            else if(this.statusTable["KeyS"] == true) {
-                //charAnimObj.position.y -= delta * 10;
-                charAnimObj.position.addScaledVector(front_vect,delta * 10 )
-            }
-
-            if(this.statusTable["KeyA"] == true) {
-                charAnimObj.rotation += delta*90;
-
-
-            }
-            else if(this.statusTable["KeyD"] == true) {
-                charAnimObj.rotation -= delta*90;
-
             }
 
         });
