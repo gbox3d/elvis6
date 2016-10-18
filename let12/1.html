@@ -103,7 +103,38 @@
             context.rotate( (this.rotation -90) * Math.PI/180);
 
             context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+        },
+        changeIdleAnim : function () {
+            this.FrameIndex = 0;
+            this.status = 'idle';
+            this.tw_idle = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 19
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None )
+                    .repeat(Infinity);
+            this.tw_idle.start();
+        },
+        changeShootAnim :function () {
+            this.FrameIndex = 0;
+            this.status = 'shoot';
+            this.tw_shoot = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 2
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None );
+            charAnimObj.tw_shoot.start();
 
+        },
+        changeMoveAnim : function () {
+            this.FrameIndex = 0;
+            this.status = 'move';
+            this.tw_shoot = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 19
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None );
+            this.tw_shoot.start();
         }
     };
 
@@ -124,42 +155,6 @@
 
     }
 
-    function changeIdleAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'idle';
-        charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 19
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None )
-                .repeat(Infinity);
-        charAnimObj.tw_idle.start();
-    }
-
-    function changeShootAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'shoot';
-        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 2
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None );
-        charAnimObj.tw_shoot.start();
-
-    }
-
-    function changeMoveAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'move';
-        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 19
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None );
-        charAnimObj.tw_shoot.start();
-
-    }
-
     async.waterfall([
                 function (next) {
                     loadImages(
@@ -167,15 +162,11 @@
                             , (images)=> {
                                 next(null,images);}
                     );
-
-
                 },
                 function (images,next) {
-
-                    changeIdleAnim();
-
                     charAnimObj.images = images;
                     charAnimObj.Fsm = "idle";
+                    charAnimObj.changeIdleAnim();
 
                     var _tick = (new Date()).getTime();
                     //console.log(images);
@@ -245,12 +236,12 @@
                             || this.statusTable["KeyD"] == true
                     ) {
                         charAnimObj.Fsm = "move";
-                        changeMoveAnim();
+                        charAnimObj.changeMoveAnim();
                     }
                     else if(this.triggerTable["Space"] == true) {
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
-                        changeShootAnim();
+                        charAnimObj.changeShootAnim();
                     }
                     break;
                 case "move":
@@ -260,7 +251,8 @@
 
                     ) {
                         charAnimObj.Fsm = "idle";
-                        changeIdleAnim();
+                        charAnimObj.changeIdleAnim();
+                        this.triggerTable["Space"] = false; //이동중에 발사가 되었다면 클리어 시킨다.
                     }
 
                     if(this.statusTable["KeyW"] == true) {
@@ -274,8 +266,6 @@
 
                     if(this.statusTable["KeyA"] == true) {
                         charAnimObj.rotation += delta*90;
-
-
                     }
                     else if(this.statusTable["KeyD"] == true) {
                         charAnimObj.rotation -= delta*90;
@@ -284,7 +274,7 @@
                 case "shoot":
                     if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";
-                        changeIdleAnim();
+                        charAnimObj.changeIdleAnim();
                     }
                     break;
             }

@@ -128,6 +128,38 @@
 
             context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
 
+        },
+        changeIdleAnim : function () {
+            this.FrameIndex = 0;
+            this.status = 'idle';
+            this.tw_idle = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 19
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None )
+                    .repeat(Infinity);
+            this.tw_idle.start();
+        },
+        changeShootAnim :function () {
+            this.FrameIndex = 0;
+            this.status = 'shoot';
+            this.tw_shoot = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 2
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None );
+            charAnimObj.tw_shoot.start();
+
+        },
+        changeMoveAnim : function () {
+            this.FrameIndex = 0;
+            this.status = 'move';
+            this.tw_shoot = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 19
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None );
+            this.tw_shoot.start();
         }
     };
 
@@ -195,41 +227,7 @@
 
     }
 
-    function changeIdleAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'idle';
-        charAnimObj.tw_idle = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 19
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None )
-                .repeat(Infinity);
-        charAnimObj.tw_idle.start();
-    }
 
-    function changeShootAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'shoot';
-        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 2
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None );
-        charAnimObj.tw_shoot.start();
-
-    }
-
-    function changeMoveAnim() {
-        charAnimObj.FrameIndex = 0;
-        charAnimObj.status = 'move';
-        charAnimObj.tw_shoot = new TWEEN.Tween( charAnimObj )
-                .to( {
-                    FrameIndex : 19
-                }, 1000)
-                .easing( TWEEN.Easing.Linear.None );
-        charAnimObj.tw_shoot.start();
-
-    }
 
     async.waterfall([
                 function (next) {
@@ -254,7 +252,7 @@
                 },
                 function (images,next) {
 
-                    changeIdleAnim();
+                    charAnimObj.changeIdleAnim();
 
                     charAnimObj.images = images;
                     charAnimObj.Fsm = "idle";
@@ -326,12 +324,28 @@
                             || this.statusTable["KeyD"] == true
                     ) {
                         charAnimObj.Fsm = "move";
-                        changeMoveAnim();
+                        charAnimObj.changeMoveAnim();
                     }
                     else if(this.triggerTable["Space"] == true) {
+
+                        /*-----------실습 코드 시작--------------------------*/
+
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
-                        changeShootAnim();
+                        charAnimObj.changeShootAnim();
+
+                        let ray_1 = new THREE.Ray(
+                                new THREE.Vector3(charAnimObj.position.x,charAnimObj.position.y,0),
+                                front_vect.negate());
+                        let sphere_1 = new THREE.Sphere(zombieAniObj.position,zombieAniObj.collusion_radius);
+                        let coll = ray_1.intersectSphere(sphere_1);
+
+                        if(coll != null ) {
+                            zombieAniObj.Fsm =  zombieAniObj.status = "die";
+                        }
+
+                        /*-----------실습 코드 끝--------------------------*/
+
                     }
                     break;
                 case "move":
@@ -341,7 +355,7 @@
 
                     ) {
                         charAnimObj.Fsm = "idle";
-                        changeIdleAnim();
+                        charAnimObj.changeIdleAnim();
                     }
 
                     if(this.statusTable["KeyW"] == true) {
@@ -354,30 +368,21 @@
                     }
 
                     if(this.statusTable["KeyA"] == true) {
-                        charAnimObj.rotation += delta*90;
+                        charAnimObj.rotation -= delta*90;
 
 
                     }
                     else if(this.statusTable["KeyD"] == true) {
-                        charAnimObj.rotation -= delta*90;
+                        charAnimObj.rotation += delta*90;
                     }
                     break;
                 case "shoot":
 
                     if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";
-                        changeIdleAnim();
+                        charAnimObj.changeIdleAnim();
 
-                        let ray_1 = new THREE.Ray(
-                                new THREE.Vector3(charAnimObj.position.x,charAnimObj.position.y,0),
-                                front_vect.negate());
-                        let sphere_1 = new THREE.Sphere(zombieAniObj.position,zombieAniObj.collusion_radius);
-                        let coll = ray_1.intersectSphere(sphere_1);
-                        console.log(coll);
 
-                        if(coll != null ) {
-                            zombieAniObj.Fsm =  zombieAniObj.status = "die";
-                        }
                     }
 
 
