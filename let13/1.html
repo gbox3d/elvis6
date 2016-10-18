@@ -115,13 +115,7 @@
         Fsm : 'idle',
         putSprite : function () {
 
-            /*
-            var imageObj = this.images[ this.status + "_"+  Math.round(this.FrameIndex) ];
-            context.translate(this.position.x,this.position.y);
-            context.scale(0.3,0.3);
-            context.rotate( (this.rotation -90) * Math.PI/180);
-            context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
-            */
+            /*---------------- 실습코드 시작 ---------------------------*/
 
             context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
             //충돌구 그리기
@@ -136,6 +130,8 @@
             }
 
             context.stroke();
+
+            /*---------------- 실습코드 끝 ---------------------------*/
 
         }
     }
@@ -261,7 +257,7 @@
 
     function startApp() {
 
-        /*-----------실습 코드 --------------------------*/
+
 
         keyInputTrigger.setCallback(function (delta) {
 
@@ -318,6 +314,7 @@
                         charAnimObj.rotation -= delta*90;
                     }
                     break;
+                    /*-----------실습 시작 --------------------------*/
                 case "shoot":
 
                     if(charAnimObj.FrameIndex == 2) {
@@ -338,6 +335,7 @@
 
 
                     break;
+                    /*-----------실습 끝 --------------------------------*/
             }
 
 
@@ -345,7 +343,7 @@
 
         });
 
-        /*-----------실습 코드 --------------------------------*/
+
 
         console.log('start app')
 

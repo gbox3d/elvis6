@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title> 애니메이션 상태 변화  </title>
 
     <!-- loadImage -->
     <script src="../libs/utils.js"></script>
@@ -27,6 +27,7 @@
 
     context.translate(canvas.width/2, canvas.height/2);
 
+    /*-----------실습 코드 시작--------------------------*/
     var audio_context = new AudioContext();
 
     var fx_gun_fire1;
@@ -50,6 +51,7 @@
 
         source1.start();
     }
+    /*-----------실습 코드 끝--------------------------*/
 
 
     function beginNewFramw() {
@@ -96,11 +98,11 @@
     var charAnimObj = {FrameIndex : 0,status : 'idle'};
 
 
-    /*----------------코딩 실습 부분 1 시작 -------------------*/
-
+    /*-----------실습 코드 시작--------------------------*/
     loadImages(
             tds_human_files
             , (images)=> {
+
 
                 function changeIdleAnim() {
                     charAnimObj.FrameIndex = 0;
@@ -160,9 +162,11 @@
 
                 });
 
-                /*----------------코딩 실습 부분  1  끝-------------------*/
+
 
             });
+
+    /*-----------실습 코드 끝--------------------------*/
 
 </script>
 

@@ -62,6 +62,7 @@
         shoot_2 : tds_human_path + 'handgun/shoot/survivor-shoot_handgun_2.png'
     }
 
+    /*-----------실습 코드 시작--------------------------*/
     var charAnimObj = {
         FrameIndex : 0,
         status : 'idle',
@@ -105,6 +106,8 @@
 
     }
 
+    /*-----------실습 코드 끝--------------------------*/
+
     async.waterfall([
             function (next) {
                 loadImages(
@@ -146,13 +149,9 @@
             },
             function (next) {
 
+                /*-----------실습 코드 시작--------------------------*/
                 document.addEventListener('keydown',(evt)=>{
-                    //console.log(evt);
                     keyInputTrigger.statusTable[evt.code] = true;
-//                    if(evt.code == "KeyA") {
-//                        charAnimObj.position.x += 1;
-//                    }
-
                 })
 
                 document.addEventListener('keyup',(evt)=>{
@@ -160,8 +159,10 @@
                 })
 
                 next();
+                /*-----------실습 코드 끝--------------------------*/
 
             }
+
     ],
             (error,result)=> {
                 startApp()
@@ -173,6 +174,7 @@
 
     function startApp() {
 
+        /*-----------실습 코드 시작 --------------------------*/
         keyInputTrigger.setCallback(function (delta) {
             if(this.statusTable["KeyW"] == true) {
                 charAnimObj.position.y += delta * 10;
@@ -190,6 +192,7 @@
             }
 
         });
+        /*-----------실습 코드 끝--------------------------*/
 
         console.log('start app')
 

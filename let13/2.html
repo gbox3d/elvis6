@@ -131,6 +131,7 @@
         }
     };
 
+    /*-----------실습 코드 시작--------------------------*/
     var zombieAniObj = {
         FrameIndex : 0,
         status : 'idle',
@@ -162,22 +163,6 @@
                 context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
             }
 
-
-            /*
-            context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
-            //충돌구 그리기
-            context.beginPath()
-            context.arc(this.position.x,this.position.y,this.collusion_radius , 0, 2 * Math.PI, false);
-            context.lineWidth = 1;
-            if(this.Fsm == 'idle') {
-                context.strokeStyle = '#008800';
-            }
-            else {
-                context.strokeStyle = '#ee0000';
-            }
-            context.stroke();
-            */
-
         },
         changeIdleAnim : function () {
             this.FrameIndex = 0;
@@ -191,6 +176,7 @@
             this.tw_idle.start();
         }
     }
+    /*-----------실습 코드 끝--------------------------*/
 
     var keyInputTrigger = {
         statusTable : {
@@ -321,8 +307,6 @@
 
     function startApp() {
 
-        /*-----------실습 코드 --------------------------*/
-
         keyInputTrigger.setCallback(function (delta) {
 
             var front_vect = new THREE.Vector3(0,1,0);
@@ -399,13 +383,7 @@
 
                     break;
             }
-
-
-
-
         });
-
-        /*-----------실습 코드 --------------------------------*/
 
         console.log('start app')
 
