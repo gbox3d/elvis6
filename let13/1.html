@@ -173,7 +173,6 @@
         }
     };
 
-    /*-----------실습 코드 시작--------------------------*/
     var zombieAniObj = {
         FrameIndex : 0,
         status : 'idle',
@@ -218,7 +217,6 @@
             this.tw_idle.start();
         }
     }
-    /*-----------실습 코드 끝--------------------------*/
 
     var keyInputTrigger = {
         statusTable : {
@@ -243,8 +241,6 @@
             this.callback = cb.bind(this)
         }
     }
-
-
 
     async.waterfall([
                 function (next) {
@@ -318,8 +314,6 @@
             ],
             (error,result)=> {
                 startApp()
-
-
             }
     )
 
@@ -409,6 +403,8 @@
 
         AiTrigger.setCallback(function (delta) {
 
+            /*---------------------- 실습코드 시작 ------------------------------*/
+
             var thisObj = zombieAniObj;
 
             var front_vect = new THREE.Vector3(0,1,0);
@@ -456,6 +452,8 @@
 
                     break;
             }
+
+            /*---------------------- 실습코드 끝 ------------------------------*/
 
         });
 

@@ -137,6 +137,7 @@
         }
     };
 
+    /*---------------- 실습코드 시작 ---------------------------*/
     var zombieAniObj = {
         FrameIndex : 0,
         status : 'idle',
@@ -146,8 +147,6 @@
         images : {},
         Fsm : 'idle',
         putSprite : function () {
-
-            /*---------------- 실습코드 시작 ---------------------------*/
 
             context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
             //충돌구 그리기
@@ -163,10 +162,11 @@
 
             context.stroke();
 
-            /*---------------- 실습코드 끝 ---------------------------*/
+
 
         }
     }
+    /*---------------- 실습코드 끝 ---------------------------*/
 
     var keyInputTrigger = {
         statusTable : {
