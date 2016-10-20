@@ -232,17 +232,23 @@
                 case "idle":
                     if(this.statusTable["KeyW"] == true
                             || this.statusTable["KeyS"] == true
-                            || this.statusTable["KeyA"] == true
-                            || this.statusTable["KeyD"] == true
+                            //|| this.statusTable["KeyA"] == true
+                            //|| this.statusTable["KeyD"] == true
                     ) {
                         charAnimObj.Fsm = "move";
                         charAnimObj.changeMoveAnim();
                     }
-
-                    if(this.triggerTable["Space"] == true) {
+                    else if(this.triggerTable["Space"] == true) {
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
                         charAnimObj.changeShootAnim();
+                    }
+
+                    if(this.statusTable["KeyA"] == true) {
+                        charAnimObj.rotation += delta*90;
+                    }
+                    else if(this.statusTable["KeyD"] == true) {
+                        charAnimObj.rotation -= delta*90;
                     }
 
                     break;
@@ -254,6 +260,7 @@
                     ) {
                         charAnimObj.Fsm = "idle";
                         charAnimObj.changeIdleAnim();
+                        this.triggerTable["Space"] = false; //이동중에 발사가 되었다면 클리어 시킨다.
                     }
 
                     if(this.statusTable["KeyW"] == true) {
@@ -261,6 +268,7 @@
                         charAnimObj.position.addScaledVector(front_vect,-delta * 10)
                     }
                     else if(this.statusTable["KeyS"] == true) {
+                        //charAnimObj.position.y -= delta * 10;
                         charAnimObj.position.addScaledVector(front_vect,delta * 10 )
                     }
 
@@ -271,6 +279,7 @@
                         charAnimObj.rotation -= delta*90;
                     }
                     break;
+
                 case "shoot":
                     if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";

@@ -27,6 +27,7 @@
         context.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height);
         //십자선그리기
         context.beginPath();
+        context.strokeStyle = "#000000";
         context.moveTo(-canvas.width/2,0);
         context.lineTo(canvas.width/2,0);
         context.stroke()
@@ -36,10 +37,6 @@
         context.stroke();
         context.closePath();
 
-
-        context.font = '18pt Calibri';
-        context.fillStyle = 'blue';
-        context.fillText(" " + charAnimObj.status, 0, 0);
     }
 
 
@@ -97,12 +94,14 @@
         position : new THREE.Vector3(),
         rotation : 0,
         putSprite : function () {
+            context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
             var imageObj = this.images[ this.status + "_"+  Math.round(this.FrameIndex) ];
             context.translate(this.position.x,this.position.y);
             context.scale(0.3,0.3);
             context.rotate( (this.rotation -90) * Math.PI/180);
 
             context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
+
         },
         changeIdleAnim : function () {
             this.FrameIndex = 0;
@@ -138,6 +137,37 @@
         }
     };
 
+    var zombieAniObj = {
+        FrameIndex : 0,
+        status : 'idle',
+        position : new THREE.Vector3(100,100,0),
+        collusion_radius : 25,
+        rotation : 0,
+        images : {},
+        Fsm : 'idle',
+        putSprite : function () {
+
+            /*---------------- 실습코드 시작 ---------------------------*/
+
+            context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
+            //충돌구 그리기
+            context.beginPath()
+            context.arc(this.position.x,this.position.y,this.collusion_radius , 0, 2 * Math.PI, false);
+            context.lineWidth = 1;
+            if(this.Fsm == 'idle') {
+                context.strokeStyle = '#008800';
+            }
+            else {
+                context.strokeStyle = '#ee0000';
+            }
+
+            context.stroke();
+
+            /*---------------- 실습코드 끝 ---------------------------*/
+
+        }
+    }
+
     var keyInputTrigger = {
         statusTable : {
             "KeyW" : false,
@@ -162,6 +192,8 @@
                             , (images)=> {
                                 next(null,images);}
                     );
+
+
                 },
                 function (images,next) {
                     charAnimObj.images = images;
@@ -181,6 +213,7 @@
 
                         keyInputTrigger.callback(deltaTick/1000);
                         charAnimObj.putSprite();
+                        zombieAniObj.putSprite();
 
                         requestAnimationFrame(loop);
                     }
@@ -215,7 +248,7 @@
 
     function startApp() {
 
-        /*-----------실습 코드 시작--------------------------*/
+
 
         keyInputTrigger.setCallback(function (delta) {
 
@@ -238,13 +271,11 @@
                         charAnimObj.Fsm = "move";
                         charAnimObj.changeMoveAnim();
                     }
-
-                    if(this.triggerTable["Space"] == true) {
+                    else if(this.triggerTable["Space"] == true) {
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
                         charAnimObj.changeShootAnim();
                     }
-
                     break;
                 case "move":
                     if(this.statusTable["KeyW"] == false && this.statusTable["KeyS"] == false
@@ -261,27 +292,49 @@
                         charAnimObj.position.addScaledVector(front_vect,-delta * 10)
                     }
                     else if(this.statusTable["KeyS"] == true) {
+                        //charAnimObj.position.y -= delta * 10;
                         charAnimObj.position.addScaledVector(front_vect,delta * 10 )
                     }
 
                     if(this.statusTable["KeyA"] == true) {
-                        charAnimObj.rotation += delta*90;
+                        charAnimObj.rotation -= delta*90;
+
+
                     }
                     else if(this.statusTable["KeyD"] == true) {
-                        charAnimObj.rotation -= delta*90;
+                        charAnimObj.rotation += delta*90;
                     }
                     break;
+                    /*-----------실습 시작 --------------------------*/
                 case "shoot":
+
                     if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";
                         charAnimObj.changeIdleAnim();
+
+                        let ray_1 = new THREE.Ray(
+                                new THREE.Vector3(charAnimObj.position.x,charAnimObj.position.y,0),
+                                front_vect.negate());
+                        let sphere_1 = new THREE.Sphere(zombieAniObj.position,zombieAniObj.collusion_radius);
+                        let coll = ray_1.intersectSphere(sphere_1);
+                        console.log(coll);
+
+                        if(coll != null ) {
+                            zombieAniObj.Fsm =  zombieAniObj.status = "die";
+                        }
                     }
+
+
                     break;
+                    /*-----------실습 끝 --------------------------------*/
             }
+
+
+
 
         });
 
-        /*-----------실습 코드 끝--------------------------------*/
+
 
         console.log('start app')
 

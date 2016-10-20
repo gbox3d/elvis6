@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>shot 동작 추가 </title>
+    <title> free will </title>
 
     <script src="../libs/async.js"></script>
     <script src="../libs/Tween.js"></script>
@@ -36,9 +36,7 @@
         context.lineTo(0,canvas.height/2);
         context.stroke();
         context.closePath();
-
     }
-
 
     var tds_human_path = "../res/2d/tds_human/";
     var tds_human_files = {
@@ -86,6 +84,44 @@
         move_18 : tds_human_path + 'handgun/move/survivor-move_handgun_18.png',
         move_19 : tds_human_path + 'handgun/move/survivor-move_handgun_19.png'
 
+    }
+
+    var tds_zombie = "../res/2d/tds_zombie/";
+    var tds_zombie_files = {
+        idle_0 : tds_zombie + 'skeleton-idle_0.png',
+        idle_1 : tds_zombie + 'skeleton-idle_1.png',
+        idle_2 : tds_zombie + 'skeleton-idle_2.png',
+        idle_3 : tds_zombie + 'skeleton-idle_3.png',
+        idle_4 : tds_zombie + 'skeleton-idle_4.png',
+        idle_5 : tds_zombie + 'skeleton-idle_5.png',
+        idle_6 : tds_zombie + 'skeleton-idle_6.png',
+        idle_7 : tds_zombie + 'skeleton-idle_7.png',
+        idle_8 : tds_zombie + 'skeleton-idle_8.png',
+        idle_9 : tds_zombie + 'skeleton-idle_9.png',
+        idle_10 : tds_zombie + 'skeleton-idle_10.png',
+        idle_11 : tds_zombie + 'skeleton-idle_11.png',
+        idle_12 : tds_zombie + 'skeleton-idle_12.png',
+        idle_13 : tds_zombie + 'skeleton-idle_13.png',
+        idle_14 : tds_zombie + 'skeleton-idle_14.png',
+        idle_15 : tds_zombie + 'skeleton-idle_15.png',
+        idle_16 : tds_zombie + 'skeleton-idle_16.png',
+        move_0 : tds_zombie + 'skeleton-move_0.png',
+        move_1 : tds_zombie + 'skeleton-move_1.png',
+        move_2 : tds_zombie + 'skeleton-move_2.png',
+        move_3 : tds_zombie + 'skeleton-move_3.png',
+        move_4 : tds_zombie + 'skeleton-move_4.png',
+        move_5 : tds_zombie + 'skeleton-move_5.png',
+        move_6 : tds_zombie + 'skeleton-move_6.png',
+        move_7 : tds_zombie + 'skeleton-move_7.png',
+        move_8 : tds_zombie + 'skeleton-move_8.png',
+        move_9 : tds_zombie + 'skeleton-move_9.png',
+        move_10 : tds_zombie + 'skeleton-move_10.png',
+        move_11 : tds_zombie + 'skeleton-move_11.png',
+        move_12 : tds_zombie + 'skeleton-move_12.png',
+        move_13 : tds_zombie + 'skeleton-move_13.png',
+        move_14 : tds_zombie + 'skeleton-move_14.png',
+        move_15 : tds_zombie + 'skeleton-move_15.png',
+        move_16 : tds_zombie + 'skeleton-move_16.png'
     }
 
     var charAnimObj = {
@@ -137,36 +173,52 @@
         }
     };
 
+    /*-----------실습 코드 시작--------------------------*/
     var zombieAniObj = {
         FrameIndex : 0,
         status : 'idle',
-        position : new THREE.Vector3(100,100,0),
+        position : new THREE.Vector3(100,90,0),
         collusion_radius : 25,
         rotation : 0,
         images : {},
         Fsm : 'idle',
         putSprite : function () {
 
-            /*---------------- 실습코드 시작 ---------------------------*/
-
             context.setTransform(1,0,0,1,canvas.width/2, canvas.height/2); //변환행렬 초기화
-            //충돌구 그리기
-            context.beginPath()
-            context.arc(this.position.x,this.position.y,this.collusion_radius , 0, 2 * Math.PI, false);
-            context.lineWidth = 1;
-            if(this.Fsm == 'idle') {
-                context.strokeStyle = '#008800';
+            context.translate(this.position.x,this.position.y);
+            context.scale(0.3,0.3);
+            context.rotate( (this.rotation -90) * Math.PI/180);
+
+            if(this.status == "die") {
+
+                context.beginPath()
+                context.arc(0,0,25, 0, 2 * Math.PI, false);
+                context.fillStyle = "#880000";
+                context.fill();
+
+                context.arc(10,15,20, 0, 2 * Math.PI, false);
+                context.fillStyle = "#ee0000";
+                context.fill();
             }
             else {
-                context.strokeStyle = '#ee0000';
+                var imageObj = this.images[ this.status + "_"+  Math.round(this.FrameIndex) ];
+                context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
             }
 
-            context.stroke();
-
-            /*---------------- 실습코드 끝 ---------------------------*/
-
+        },
+        changeIdleAnim : function () {
+            this.FrameIndex = 0;
+            this.status = 'idle';
+            this.tw_idle = new TWEEN.Tween( this )
+                    .to( {
+                        FrameIndex : 16
+                    }, 1000)
+                    .easing( TWEEN.Easing.Linear.None )
+                    .repeat(Infinity);
+            this.tw_idle.start();
         }
     }
+    /*-----------실습 코드 끝--------------------------*/
 
     var keyInputTrigger = {
         statusTable : {
@@ -185,33 +237,59 @@
 
     }
 
+    var AiTrigger = {
+        callback : function (delta) {},
+        setCallback : function (cb) {
+            this.callback = cb.bind(this)
+        }
+    }
+
+
+
     async.waterfall([
+                function (next) {
+                    loadImages(
+                            tds_zombie_files
+                            , (images)=> {
+                                next(null,images);}
+                    );
+                },
+                function (images,next) {
+                    zombieAniObj.images = images;
+                    zombieAniObj.changeIdleAnim();
+                    zombieAniObj.Fsm = "think"
+                    next();
+
+                },
                 function (next) {
                     loadImages(
                             tds_human_files
                             , (images)=> {
                                 next(null,images);}
                     );
-
-
                 },
                 function (images,next) {
+
+                    charAnimObj.changeIdleAnim();
+
                     charAnimObj.images = images;
                     charAnimObj.Fsm = "idle";
-                    charAnimObj.changeIdleAnim();
 
                     var _tick = (new Date()).getTime();
                     //console.log(images);
                     function loop() {
+
                         //에니메이션 처리
                         TWEEN.update();
-                        beginNewFramw();
-
                         //델타틱 계산
-                        let deltaTick = (new Date()).getTime() - _tick;
+                        let deltaTick = ((new Date()).getTime() - _tick)/1000;
                         _tick = (new Date()).getTime();
 
-                        keyInputTrigger.callback(deltaTick/1000);
+                        //트리거 처리
+                        keyInputTrigger.callback(deltaTick);
+                        AiTrigger.callback(deltaTick);
+
+                        beginNewFramw();
                         charAnimObj.putSprite();
                         zombieAniObj.putSprite();
 
@@ -248,8 +326,6 @@
 
     function startApp() {
 
-
-
         keyInputTrigger.setCallback(function (delta) {
 
             var front_vect = new THREE.Vector3(0,1,0);
@@ -272,9 +348,25 @@
                         charAnimObj.changeMoveAnim();
                     }
                     else if(this.triggerTable["Space"] == true) {
+
+                        /*-----------실습 코드 시작--------------------------*/
+
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
                         charAnimObj.changeShootAnim();
+
+                        let ray_1 = new THREE.Ray(
+                                new THREE.Vector3(charAnimObj.position.x,charAnimObj.position.y,0),
+                                front_vect.negate());
+                        let sphere_1 = new THREE.Sphere(zombieAniObj.position,zombieAniObj.collusion_radius);
+                        let coll = ray_1.intersectSphere(sphere_1);
+
+                        if(coll != null ) {
+                            zombieAniObj.Fsm =  zombieAniObj.status = "die";
+                        }
+
+                        /*-----------실습 코드 끝--------------------------*/
+
                     }
                     break;
                 case "move":
@@ -305,36 +397,67 @@
                         charAnimObj.rotation += delta*90;
                     }
                     break;
-                    /*-----------실습 시작 --------------------------*/
                 case "shoot":
 
                     if(charAnimObj.FrameIndex == 2) {
                         charAnimObj.Fsm = "idle";
                         charAnimObj.changeIdleAnim();
-
-                        let ray_1 = new THREE.Ray(
-                                new THREE.Vector3(charAnimObj.position.x,charAnimObj.position.y,0),
-                                front_vect.negate());
-                        let sphere_1 = new THREE.Sphere(zombieAniObj.position,zombieAniObj.collusion_radius);
-                        let coll = ray_1.intersectSphere(sphere_1);
-                        console.log(coll);
-
-                        if(coll != null ) {
-                            zombieAniObj.Fsm =  zombieAniObj.status = "die";
-                        }
                     }
-
-
                     break;
-                    /*-----------실습 끝 --------------------------------*/
             }
-
-
-
-
         });
 
+        AiTrigger.setCallback(function (delta) {
 
+            var thisObj = zombieAniObj;
+
+            var front_vect = new THREE.Vector3(0,1,0);
+            var side_vect = new THREE.Vector3(1,0,0);
+            //회전적용
+            var quaternion = new THREE.Quaternion();
+            quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), thisObj.rotation * Math.PI / 180 );
+            front_vect.applyQuaternion(quaternion);
+            side_vect.applyQuaternion(quaternion);
+
+            switch (thisObj.Fsm) {
+                case "idle":
+                    break;
+                case "move":
+                    setTimeout(function () {
+                        if(thisObj.Fsm != "die") {
+                            thisObj.Fsm="think";
+                            thisObj.status="idle"
+                        }
+
+                    },5000)
+                    thisObj.Fsm = "move_2";
+                    break;
+                case "move_2":
+                    if(thisObj.dest_rotation > thisObj.rotation) {
+                        thisObj.rotation += delta*45;
+                    }
+                    else if(thisObj.dest_rotation < thisObj.rotation) {
+                        thisObj.rotation -= delta*45;
+                    }
+
+                    thisObj.position.addScaledVector(front_vect,-delta * 10);
+                    break;
+                case "think":
+                    thisObj.dest_rotation = Math.random() * 360;
+                    thisObj.Fsm = "idle";
+                    setTimeout(function () {
+                        if(thisObj.Fsm != "die") {
+                            thisObj.Fsm="move";
+                            thisObj.status="move"
+                        }
+                    },1000)
+                    break;
+                case "die":
+
+                    break;
+            }
+
+        });
 
         console.log('start app')
 
