@@ -397,8 +397,6 @@
                     }
                     else if(this.triggerTable["Space"] == true) {
 
-                        /*-----------실습 코드 시작--------------------------*/
-
                         this.triggerTable["Space"] = false;
                         charAnimObj.Fsm = "shoot";
                         charAnimObj.changeShootAnim();
@@ -412,8 +410,6 @@
                         if(coll != null ) {
                             zombieAniObj.Fsm =  zombieAniObj.status = "die";
                         }
-
-                        /*-----------실습 코드 끝--------------------------*/
 
                     }
                     break;

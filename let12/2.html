@@ -232,8 +232,6 @@
                 case "idle":
                     if(this.statusTable["KeyW"] == true
                             || this.statusTable["KeyS"] == true
-                            //|| this.statusTable["KeyA"] == true
-                            //|| this.statusTable["KeyD"] == true
                     ) {
                         charAnimObj.Fsm = "move";
                         charAnimObj.changeMoveAnim();
@@ -264,11 +262,9 @@
                     }
 
                     if(this.statusTable["KeyW"] == true) {
-
                         charAnimObj.position.addScaledVector(front_vect,-delta * 10)
                     }
                     else if(this.statusTable["KeyS"] == true) {
-                        //charAnimObj.position.y -= delta * 10;
                         charAnimObj.position.addScaledVector(front_vect,delta * 10 )
                     }
 

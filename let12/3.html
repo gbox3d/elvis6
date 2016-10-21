@@ -247,9 +247,6 @@
 
 
     function startApp() {
-
-
-
         keyInputTrigger.setCallback(function (delta) {
 
             var front_vect = new THREE.Vector3(0,1,0);
@@ -288,18 +285,14 @@
                     }
 
                     if(this.statusTable["KeyW"] == true) {
-
                         charAnimObj.position.addScaledVector(front_vect,-delta * 10)
                     }
                     else if(this.statusTable["KeyS"] == true) {
-                        //charAnimObj.position.y -= delta * 10;
                         charAnimObj.position.addScaledVector(front_vect,delta * 10 )
                     }
 
                     if(this.statusTable["KeyA"] == true) {
                         charAnimObj.rotation -= delta*90;
-
-
                     }
                     else if(this.statusTable["KeyD"] == true) {
                         charAnimObj.rotation += delta*90;

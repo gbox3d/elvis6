@@ -105,6 +105,7 @@
             context.drawImage(imageObj, 0-imageObj.width/2, 0-imageObj.height/2);
 
         },
+        /*-----------실습 코드 시작--------------------------*/
         changeIdleAnim : function () {
             this.FrameIndex = 0;
             this.status = 'idle';
@@ -137,6 +138,7 @@
                     .easing( TWEEN.Easing.Linear.None );
             this.tw_shoot.start();
         }
+        /*-----------실습 코드 끝 --------------------------*/
     };
 
     var keyInputTrigger = {
